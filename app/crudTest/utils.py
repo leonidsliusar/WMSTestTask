@@ -1,7 +1,7 @@
 from typing import Protocol
 from crudTest.data_models import T, CategoryBase, ProductBase, models_mapping
-from crudTest.dal import add_multiple, get_many
-from crudTest.models import M, Category
+from crudTest.dal import add_multiple, get_many, get_all
+from crudTest.models import M, Category, Product
 
 
 class Parser(Protocol):
@@ -102,3 +102,7 @@ def insert_from_string(data: str, parser_factory: Parser = StringParserFactory) 
     obj_map_set = parser.map_from_str
     obj_set = get_obj_set(obj_map_set, db_model)
     add_multiple(db_model, obj_set)
+
+
+def fetch_all(model: M = Product) -> list[M]:
+    return get_all(model)

@@ -1,7 +1,7 @@
 import os
+import subprocess
 
 import pytest
-
 from crudTest.models import Category, Product
 from crudTest.utils import StringParser, ProductBase, CategoryBase
 
@@ -46,6 +46,22 @@ def dummy_insert() -> Category:
     Category.objects.bulk_create([obj_l_1, obj_l_2, obj])
     return obj
 
+
+@pytest.fixture()
+def my_docker_db(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        subprocess.run(['docker-compose', '-f', 'tests/docker-compose.yml', 'up', '-d'])
+        subprocess.run(['django-admin', 'migrate'])  # Применить миграции
+        yield
+        subprocess.run(['docker-compose', '-f', 'tests/docker-compose.yml', 'down', '-v'])
+
+
+@pytest.fixture(scope='session')
+def django_db_setup(django_db_setup):
+    os.system('docker compose -f tests/docker-compose.yml up -d')
+    print('YEAH')
+    yield
+    os.system('docker compose -f tests/docker-compose.yml down -v')
 
 
 @pytest.fixture

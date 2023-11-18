@@ -1,0 +1,23 @@
+.table {
+	font-family: "Ubuntu, Helvetica, sans-serif";
+
+}
+
+th[scope="col"]  {
+	letter-spacing: 4px;
+	font-size: 1.5em !important;
+}
+
+.id {
+	font-weight: 700;
+}
+
+.table-primary {
+	color: black;
+	letter-spacing: 2px;
+	font-size: 1em;
+}
+
+.table thead th.sortable {
+    cursor: pointer;
+}

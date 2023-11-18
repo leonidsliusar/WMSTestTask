@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="http://172.22.0.4/static/style.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <table id='headerTable' class="table table-dark table-striped-columns table-sortable">
+        <thead>
+            <tr>
+                <th scope="col" class="sortable">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col" class="sortable">Price</th>
+                <th scope="col" class="sortable">Quantity</th>
+                <th scope="col">Category</th>
+            </tr>
+        </thead>
+        <tbody id="dataTable">
+            {% for product in products %}
+            <tr class="table-striped-columns" id="product_{{ forloop.counter }}">
+                <td class="id table-dark">{{ product.id }}</td>
+                <div class="table-primary">
+                    <td class="table-primary">{{ product.title }}</td>
+                    <td class="table-primary">{{ product.cost }}</td>
+                    <td class="table-primary">{{ product.count }}</td>
+                    <td class="table-primary">{{ product.recursive_nested_category }}</td>
+                </div>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="{% static 'script.js' %}"></script>
+  </body>
+</html>
