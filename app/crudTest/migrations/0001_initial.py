@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('title', models.CharField(max_length=255)),
-                ('parent', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='crudTest.category')),
+                ('parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='crudTest.category')),
             ],
         ),
         migrations.CreateModel(
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=255)),
                 ('count', models.PositiveIntegerField(validators=[django.core.validators.MaxValueValidator(100000), django.core.validators.MinValueValidator(0)])),
                 ('cost', models.DecimalField(decimal_places=2, max_digits=12, validators=[django.core.validators.MinValueValidator(0)])),
-                ('category_id', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='crudTest.category')),
+                ('category_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='crudTest.category')),
             ],
         ),
     ]

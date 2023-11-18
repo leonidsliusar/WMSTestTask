@@ -1,5 +1,5 @@
 from crudTest.utils import insert_from_string
-
+from django.db.utils import IntegrityError
 
 products = """id:title:category_id:count:cost
 1:Велосипед:1:100:100.50
@@ -14,5 +14,9 @@ category = """id:title:parent
 4:Посуда для кухни:5
 5:Товары для дома:None"""
 
-
-insert_from_string(products)
+if __name__ == '__main__' or 'manage.py':
+    for data in [category, products]:
+        try:
+            insert_from_string(data)
+        except IntegrityError as e:
+            print(f'Already exists\n{e.__str__()}')

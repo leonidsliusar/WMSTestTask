@@ -1,19 +1,19 @@
 from typing import TypeVar, Type
 
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, connection
 
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
-    parent = models.OneToOneField('self', null=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.title
 
     @property
-    def get_nested(self) -> str:
+    def nested(self) -> str:
         current_parent = self.parent
         nested = f'{self.title}'
         while current_parent:
@@ -21,11 +21,30 @@ class Category(models.Model):
             current_parent = current_parent.parent
         return nested
 
+    @property
+    def recursive_nested(self) -> str:
+        query = """
+                WITH RECURSIVE category_tree(id, title, parent_id) AS (
+                    SELECT id, title, parent_id
+                    FROM "crudTest_category"
+                    WHERE id = %s
+                    UNION
+                    SELECT c.id, c.title, c.parent_id
+                    FROM "crudTest_category" c
+                    INNER JOIN category_tree ct ON c.id = ct.parent_id
+                )
+                SELECT title FROM category_tree;
+            """
+        with connection.cursor() as cursor:
+            cursor.execute(query, [self.id])
+            nested = ' · '.join(row[0] for row in cursor.fetchall())
+        return nested
+
 
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
-    category_id = models.OneToOneField(Category, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='category_id')
     count = models.PositiveIntegerField(validators=[MaxValueValidator(100000), MinValueValidator(0)])
     cost = models.DecimalField(null=False, max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
 

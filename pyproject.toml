@@ -10,6 +10,8 @@ python = "^3.11"
 django = "^4.2.7"
 psycopg2-binary = "^2.9.9"
 pydantic = "^2.5.1"
+pydantic-settings = "^2.1.0"
+django-extensions = "^3.2.3"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -23,4 +25,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 PYTHONPATH = 'app'
-DJANGO_SETTINGS_MODULE = 'tests.test_settings'
+DJANGO_SETTINGS_MODULE = 'app.settings'

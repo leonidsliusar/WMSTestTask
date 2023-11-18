@@ -38,6 +38,16 @@ def dummy_obj() -> Category:
     return obj
 
 
+@pytest.fixture()
+def dummy_insert() -> Category:
+    obj_l_1 = Category(id=1, title='Level-1', parent=None)
+    obj_l_2 = Category(id=2, title='Level-2', parent=obj_l_1)
+    obj = Category(id=3, title='Level-3', parent=obj_l_2)
+    Category.objects.bulk_create([obj_l_1, obj_l_2, obj])
+    return obj
+
+
+
 @pytest.fixture
 def stub_obj_set(request):
     if isinstance(request.param, list):

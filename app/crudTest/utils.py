@@ -1,5 +1,5 @@
 from typing import Protocol
-from crudTest.data_models import T, CategoryBase, ProductBase
+from crudTest.data_models import T, CategoryBase, ProductBase, models_mapping
 from crudTest.dal import add_multiple, get_many
 from crudTest.models import M, Category
 
@@ -31,6 +31,10 @@ class StringParser(Parser):
         obj_map = dict(zip(self.map_key, value))
         serialized_model = self.base_model(**obj_map)
         return serialized_model.model_dump()
+
+    @property
+    def model(self) -> T:
+        return self.base_model
 
 
 class ParserFactory(Protocol):
@@ -80,7 +84,7 @@ def get_obj_set(obj_map_set: list[dict], db_model: M) -> list[M]:
         category_ids = []
         for item in obj_map_set:
             category_ids.append(item.get('category_id'))
-        category_obj_set = get_many(db_model, category_ids)
+        category_obj_set = get_many(Category, category_ids)
         category_map = {}
         for item in category_obj_set:
             category_map[item.id] = item
@@ -91,10 +95,10 @@ def get_obj_set(obj_map_set: list[dict], db_model: M) -> list[M]:
         return obj_set
 
 
-def insert_from_string(data: str, parser_factory: ParserFactory = StringParserFactory) -> None:
+def insert_from_string(data: str, parser_factory: Parser = StringParserFactory) -> None:
     """Insert from string interface"""
     parser = parser_factory(data).prepare
-    db_model = parser.model
+    db_model = models_mapping.get(parser.model)
     obj_map_set = parser.map_from_str
     obj_set = get_obj_set(obj_map_set, db_model)
     add_multiple(db_model, obj_set)

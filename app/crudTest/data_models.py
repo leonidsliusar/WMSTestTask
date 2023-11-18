@@ -2,6 +2,8 @@ from typing import Optional, TypeVar, Type
 
 from pydantic import BaseModel, field_validator
 
+from crudTest.models import Category, Product
+
 
 class ProductBase(BaseModel):
     id: int
@@ -41,3 +43,8 @@ class CategoryBase(BaseModel):
 
 
 T = TypeVar('T', Type[CategoryBase], Type[ProductBase])
+
+models_mapping = {
+    CategoryBase: Category,
+    ProductBase: Product
+}
